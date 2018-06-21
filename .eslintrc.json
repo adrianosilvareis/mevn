@@ -1,0 +1,16 @@
+{
+  "extends": "standard",
+  "rules":{
+    "comma-dangle": ["error", "always-multiline"]
+  },
+  "plugins": ["jest"],
+  "globals": {
+    "describe":true,
+    "expect":true,
+    "it":true,
+    "beforeEach":true,
+    "beforeAll":true,
+    "afterAll":true
+
+  }
+}

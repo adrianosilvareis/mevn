@@ -1,0 +1,8 @@
+{
+  "env": {},
+  "ignore": ["node_modules"],
+  "plugins": [],
+  "presets": [
+    "stage-0"
+  ]
+}
