@@ -4,7 +4,9 @@ module.exports = (app) => {
 
   controller = {
     listarContatos (req, res) {
-      Contato.find().exec()
+      const { skip, limit } = req.params
+
+      Contato.find().skip(Math.floor(skip)).limit(Math.floor(limit)).exec()
         .then(contatos => res.status(200).json(contatos))
         .catch(err => res.status(500).json(err))
     },
