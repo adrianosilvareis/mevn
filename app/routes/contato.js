@@ -1,7 +1,7 @@
 module.exports = (app) => {
   const controller = app.controllers.contato
 
-  app.route('/contato/list/:skip/:limit')
+  app.route('/contato/list')
     .get(controller.listarContatos)
 
   app.route('/contato')

@@ -11,6 +11,5 @@
     "beforeEach":true,
     "beforeAll":true,
     "afterAll":true
-
   }
 }

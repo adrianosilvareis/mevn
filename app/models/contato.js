@@ -4,15 +4,15 @@ module.exports = () => {
   const schema = mongoose.Schema({
     nome: {
       type: String,
-      require: true,
+      required: true,
     },
     sobrenome: {
       type: String,
-      require: true,
+      required: true,
     },
     email: {
       type: String,
-      require: true,
+      required: true,
       index: {
         unique: true,
       },

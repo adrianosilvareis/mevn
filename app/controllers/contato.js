@@ -3,48 +3,59 @@ module.exports = (app) => {
   const Contato = app.models.contato
 
   controller = {
-    listarContatos (req, res) {
-      const { skip, limit } = req.params
+    listarContatos: async (req, res) => {
+      const { page = 1, limit = 10, sort = '_id' } = req.query
 
-      Contato.find().skip(Math.floor(skip)).limit(Math.floor(limit)).exec()
-        .then(contatos => res.status(200).json(contatos))
-        .catch(err => res.status(500).json(err))
-    },
-    obterContato (req, res) {
-      const _id = req.params.id
-      Contato.findById(_id).exec()
-        .then(contato => {
-          if (!contato) throw Error('Contato não encontrado!')
+      try {
+        const [ result, count ] = await Promise.all([
+          Contato.find({}).skip(Math.floor(limit) * (Math.floor(page) - 1)).limit(Math.floor(limit)).sort(sort).lean().exec(),
+          Contato.count({}),
+        ])
 
-          res.status(200).json(contato)
-        })
-        .catch(err => res.status(404).json(err))
-    },
-    cadastrarContato (req, res) {
-      const contato = req.body
-
-      if (!contato._id) {
-        Contato.create(contato)
-          .then(contato => res.status(200).json(contato))
-          .catch(err => res.status(500).json(err))
-      } else {
-        throw new Error('Contato já cadastrado')
+        res.status(200).json({ result, count })
+      } catch (err) {
+        res.statu(500).json(err)
       }
     },
-    atualizarContato (req, res) {
-      const contato = req.body
-
-      Contato.findByIdAndUpdate(contato._id, contato, { new: true })
-        .exec()
-        .then(cont => res.status(200).json(cont))
-        .catch(err => res.status(404).json({ err, message: 'Contato não encontrado!' }))
-    },
-    removerContato (req, res) {
+    obterContato: async (req, res) => {
       const _id = req.params.id
 
-      Contato.remove({ _id })
-        .then(() => res.end())
-        .catch(err => res.status(500).json(err))
+      try {
+        const contato = await Contato.findById(_id).lean().exec()
+        res.status(200).json(contato)
+      } catch (err) {
+        res.status(404).json(err)
+      }
+    },
+    cadastrarContato: async (req, res) => {
+      const contato = req.body
+
+      try {
+        const resposta = await Contato.create(contato)
+        res.status(200).json(resposta)
+      } catch (err) {
+        res.status(500).json(err)
+      }
+    },
+    atualizarContato: async (req, res) => {
+      const contato = req.body
+
+      try {
+        await Contato.findByIdAndUpdate(contato._id, contato, { new: true }).exec()
+        res.status(200).json(contato)
+      } catch (err) {
+        res.status(404).json({ message: 'Contato não encontrado!' })
+      }
+    },
+    removerContato: async (req, res) => {
+      const _id = req.params.id
+
+      try {
+        const contato = await Contato.findOneAndRemove({ _id })
+        res.status(200).json(contato)
+      } catch (err) {
+        res.status(500).json(err)
+      }
     },
   }
 
